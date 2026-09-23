@@ -3,7 +3,7 @@ from fastapi import APIRouter,Depends
 from sqlalchemy.orm import Session
 from database import get_db
 import schemas
-from crud.todo import (create_todo,get_todo,update_todo,delete_todo)
+from todo import (create_todo,get_todo,update_todo,delete_todo)
 from schemas import TodoCreate,TodoUpdate,TodoDelete
 
 
