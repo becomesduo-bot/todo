@@ -1,48 +1,38 @@
-from datetime import datetime
-from typing import Optional
-
-from pydantic import BaseModel, ConfigDict, EmailStr, Field
+from pydantic import BaseModel
 
 
-# ---------- User ----------
-class UserCreate(BaseModel):
-    username: str = Field(min_length=3, max_length=50)
-    email: EmailStr
-    password: str = Field(min_length=6, max_length=72)
+class SignupSchema(BaseModel):
 
-
-class UserOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
-
-    id: int
     username: str
-    email: EmailStr
-    created_at: datetime
+    email: str
+    password: str
 
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str = "bearer"
+class LoginSchema(BaseModel):
+
+    username: str
+    password: str
 
 
-# ---------- Todo ----------
 class TodoCreate(BaseModel):
-    title: str = Field(min_length=1, max_length=200)
-    description: Optional[str] = None
+
+    title: str
+    description: str | None = None
 
 
 class TodoUpdate(BaseModel):
-    title: Optional[str] = Field(default=None, min_length=1, max_length=200)
-    description: Optional[str] = None
-    is_completed: Optional[bool] = None
+
+    title: str | None = None
+    description: str | None = None
+    completed: bool | None = None
 
 
-class TodoOut(BaseModel):
-    model_config = ConfigDict(from_attributes=True)
+class TodoResponse(BaseModel):
 
     id: int
     title: str
-    description: Optional[str]
-    is_completed: bool
-    created_at: datetime
-    owner_id: int
+    description: str | None
+    completed: bool
+
+    class Config:
+        from_attributes = True
