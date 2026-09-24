@@ -1,28 +1,44 @@
-from datetime import datetime, timedelta, timezone
-
-import bcrypt
-import jwt
-
-from app.config import settings
+from passlib.context import CryptContext
+from jose import jwt
 
 
-def hash_password(password: str) -> str:
-    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+SECRET_KEY = "my-super-secret-key"
+
+ALGORITHM = "HS256"
 
 
-def verify_password(plain: str, hashed: str) -> bool:
-    return bcrypt.checkpw(plain.encode(), hashed.encode())
+pwd_context = CryptContext(
+    schemes=["bcrypt"],
+    deprecated="auto"
+)
 
 
-def create_access_token(subject: str) -> str:
-    expire = datetime.now(timezone.utc) + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
-    payload = {"sub": subject, "exp": expire}
-    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+def hash_password(password):
+
+    return pwd_context.hash(password)
 
 
-def decode_access_token(token: str) -> str | None:
-    try:
-        payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
-        return payload.get("sub")
-    except jwt.PyJWTError:
-        return None
+def verify_password(
+    plain_password,
+    hashed_password
+):
+
+    return pwd_context.verify(
+        plain_password,
+        hashed_password
+    )
+
+
+def create_token(user_id):
+
+    data = {
+        "sub": str(user_id)
+    }
+
+    token = jwt.encode(
+        data,
+        SECRET_KEY,
+        algorithm=ALGORITHM
+    )
+
+    return token
