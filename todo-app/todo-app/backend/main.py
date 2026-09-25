@@ -85,13 +85,14 @@ app = FastAPI(title="Todo API")
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-    "http://localhost:5173",
-    "http://127.0.0.1:5173",
-    "http://13.60.197.183"
-]
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+        "http://13.60.197.183"
+    ],
     allow_methods=["*"],
     allow_headers=["*"],
 )
+    
 oauth2 = OAuth2PasswordBearer(tokenUrl="auth/login")
 
 
